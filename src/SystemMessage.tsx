@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import {
+  Image,
   StyleSheet,
   Text,
+  ImageProps,
   View,
   ViewStyle,
   StyleProp,
+  ImageStyle,
   TextStyle,
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -26,6 +29,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '300',
   },
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    margin: 3,
+    resizeMode: 'cover',
+  },
 })
 
 export interface SystemMessageProps<TMessage extends IMessage> {
@@ -33,6 +43,8 @@ export interface SystemMessageProps<TMessage extends IMessage> {
   containerStyle?: StyleProp<ViewStyle>
   wrapperStyle?: StyleProp<ViewStyle>
   textStyle?: StyleProp<TextStyle>
+  imageStyle?: StyleProp<ImageStyle>
+  imageProps?: Partial<ImageProps>
 }
 
 export default class SystemMessage<
@@ -40,11 +52,14 @@ export default class SystemMessage<
 > extends Component<SystemMessageProps<TMessage>> {
   static defaultProps = {
     currentMessage: {
+      image: null,
       system: false,
     },
     containerStyle: {},
     wrapperStyle: {},
     textStyle: {},
+    imageStyle: {},
+    imageProps: {},
   }
 
   static propTypes = {
@@ -52,6 +67,8 @@ export default class SystemMessage<
     containerStyle: StylePropType,
     wrapperStyle: StylePropType,
     textStyle: StylePropType,
+    imageStyle: StylePropType,
+    imageProps: PropTypes.object,
   }
 
   render() {
@@ -60,11 +77,18 @@ export default class SystemMessage<
       containerStyle,
       wrapperStyle,
       textStyle,
+      imageProps,
+      imageStyle,
     } = this.props
     if (currentMessage) {
       return (
         <View style={[styles.container, containerStyle]}>
           <View style={wrapperStyle}>
+            <Image
+              {...imageProps}
+              style={[styles.image, imageStyle]}
+              source={{ uri: currentMessage.image }}
+            />
             <Text style={[styles.text, textStyle]}>{currentMessage.text}</Text>
           </View>
         </View>
